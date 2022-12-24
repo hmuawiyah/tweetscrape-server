@@ -1,9 +1,14 @@
 from flask import *
-from flask_cors import CORS
-# import json, time
-import snscrape.modules.twitter as sntwitter
+# from logging import FileHandler,WARNING
+import json, time
 
 app = Flask(__name__)
+# app = Flask(__name__, template_folder = 'template')
+# file_handler = FileHandler('errorlog.txt')
+# file_handler.setLevel(WARNING)
+# ----------------------------------
+
+from flask_cors import CORS
 
 CORS(app)
 cors= CORS (app, resources={
@@ -12,17 +17,37 @@ cors= CORS (app, resources={
     }
 })
 
-@app.route('/s', methods=['GET'])
+import snscrape.modules.twitter as sntwitter
+# import pandas as pd
+
+# query = "python"
+query = "(from:fabrizioromano)"
+# tweets = []
+# limit = 5000
+
+
+for tweet in sntwitter.TwitterSearchScraper(query).get_items():
+    # tweet = json.dumps(tweet)
+    print(vars(tweet))
+    break 
+    # if len(tweets) == limit:
+    #     break
+    # else:
+    #     tweets.append([tweet.date, tweet.username, tweet.content])
+        
+# df = pd.DataFrame(tweets, columns=['Date', 'User', 'Tweet'])
+# print(df)
+
+# ----------------------------------
+
+
+@app.route('/', methods=['GET'])
 def home_page():
-    args = request.args
-    tweetnya = args.get('tweetnya')
+    # data_set = {'name':'ronaldo', 'message':'Hello from portugal'}
+    # json_dump = json.dumps(data_set)
 
-    for tweet in sntwitter.TwitterSearchScraper(tweetnya).get_items():
-        print(vars(tweet))
-        break 
-
+    # print(
     return vars(tweet)
-    # return tweetnya
 
 if __name__ == '__main__':
     app.run(port=7777)
